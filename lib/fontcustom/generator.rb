@@ -96,7 +96,7 @@ module Fontcustom
       template('templates/fontcustom.js', File.join(@output, 'fontcustom.js'))
     end
 
-    def create_html_demo # hatchd addition for Demo
+    def create_html # hatchd addition for Demo
       files = Dir[File.join(input, '*.{svg,eps}')]
       @classes = files.map {|file| File.basename(file)[0..-5].gsub(/\W/, '-').downcase }
       @path = File.basename(@path)
