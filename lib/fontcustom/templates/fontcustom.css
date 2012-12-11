@@ -69,14 +69,10 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
   Icon Classes
 */
 <% @classes.each_with_index do |name, index| %>
-.icon-<%= name %>:before { content: "\<%= (61696+index).to_s(16) %>"; }<% end %>
+.icon-<%= name %>:before{content:"\<%= (61696+index).to_s(16) %>";}<% end %>
 
 .lt-ie8{
-
   <% @classes.each_with_index do |name, index| %>
-    .icon-<%= name %>{
-      *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#<%= (61696+index) %>;&nbsp;');
-    }
-  <% end %>
+  .icon-<%= name %>{zoom:expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#<%= (61696+index) %>;&nbsp;');}<% end %>
 
 }

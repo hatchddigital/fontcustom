@@ -1,0 +1,11 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Eggbox demo</title>
+		<link rel="stylesheet" type="text/css" href="fontcustom.css" />
+	</head>
+	<body>
+		<% @classes.each_with_index do |name, index| %>
+		<p class="icon-<%= name %>">.icon-<%= name %></p><% end %>
+	</body>
+</html>

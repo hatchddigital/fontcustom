@@ -54,6 +54,10 @@ module Fontcustom
 
       old_files = Dir[File.join(@output, old_name + '-*.{woff,ttf,eot,svg}')]
       old_files << css if File.exists?(css)
+      js_file = File.join(@output, 'fontcustom.js') # hatchd addition for js IE8 fallback
+      old_files << js_file if File.exists?(js_file) # hatchd addition for js IE8 fallback
+      demo_file = File.join(@output, 'demo.html') # hatchd addition for demo
+      old_files << demo_file if File.exists?(demo_file) # hatchd addition for demo
       old_files.each {|file| remove_file file }
     end
 
@@ -84,7 +88,7 @@ module Fontcustom
       template('templates/fontcustom.css', File.join(@output, 'fontcustom.css'))
     end
 
-    def create_javascript
+    def create_javascript # hatchd addition for js IE8 fallback
       files = Dir[File.join(input, '*.{svg,eps}')]
       @classes = files.map {|file| File.basename(file)[0..-5].gsub(/\W/, '-').downcase }
       @path = File.basename(@path)
@@ -92,6 +96,13 @@ module Fontcustom
       template('templates/fontcustom.js', File.join(@output, 'fontcustom.js'))
     end
 
+    def create_html_demo # hatchd addition for Demo
+      files = Dir[File.join(input, '*.{svg,eps}')]
+      @classes = files.map {|file| File.basename(file)[0..-5].gsub(/\W/, '-').downcase }
+      @path = File.basename(@path)
+
+      template('templates/demo.html', File.join(@output, 'demo.html'))
+    end
 
   end
 end
