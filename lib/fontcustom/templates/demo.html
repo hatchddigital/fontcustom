@@ -1,11 +1,15 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Eggbox demo</title>
+		<title>Eggbox | a clutch of icons, handpicked by the Hatchd Digital team</title>
+		<link rel="stylesheet" href="../_demo/demo.css" />
 		<link rel="stylesheet" href="fontcustom.css" />
 	</head>
 	<body>
-		<% @classes.each_with_index do |name, index| %>
-		<p class="icon-<%= name %>">.icon-<%= name %></p><% end %>
+		<h1 class="demo-header">Your eggbox contains</h1>
+		<ul class="demo-iconlist">
+			<% @classes.each_with_index do |name, index| %>
+			<li class="icon-<%= name %>"><span class="demo-iconlabel">.icon-<%= name %></span></li><% end %>
+		</ul>
 	</body>
 </html>
