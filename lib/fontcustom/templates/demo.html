@@ -9,7 +9,7 @@
 		<h1 class="demo-header">Your eggbox contains</h1>
 		<ul class="demo-iconlist">
 			<% @classes.each_with_index do |name, index| %>
-			<li class="icon-<%= name %>"><span class="demo-iconlabel">.icon-<%= name %></span></li><% end %>
+			<li class="icon-<%= name %>"><span class="demo-iconlabel">.icon-<%= name %><br /><%= (61696+index).to_s(16) %> / &amp;#<%= (61696+index) %>;</span></li><% end %>
 		</ul>
 	</body>
 </html>
