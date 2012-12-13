@@ -20,9 +20,9 @@
 		//Map font-family to base icon class
 	//===
 		[class*="icon-"]:before{
-		  font-family:"<%= @name %>";
-		  display:inline-block;
-		  text-decoration:inherit;
+			display:inline-block;
+			font-family:"<%= @name %>";
+			text-decoration:inherit;
 		}
 
 	//===
@@ -38,10 +38,9 @@
 		#icon{
 			<% @classes.each_with_index do |name, index| %>
 			.<%= name %>(){
-
 				&:before{
-					font-family:"<%= @name %>";
 					display:inline-block;
+					font-family:"<%= @name %>";
 					text-decoration:inherit;
 					content:"\<%= (61696+index).to_s(16) %>";
 				}
