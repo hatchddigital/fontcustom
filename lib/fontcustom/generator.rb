@@ -58,6 +58,9 @@ module Fontcustom
       old_files << js_file if File.exists?(js_file) # hatchd addition for js IE8 fallback
       demo_file = File.join(@output, 'demo.html') # hatchd addition for demo
       old_files << demo_file if File.exists?(demo_file) # hatchd addition for demo
+      less_file = File.join(@output, 'fontcustom.less') # hatchd addition for less file
+      old_files << less_file if File.exists?(less_file) # hatchd addition for less file
+
       old_files.each {|file| remove_file file }
     end
 
@@ -86,6 +89,14 @@ module Fontcustom
       @path = File.basename(@path)
 
       template('templates/fontcustom.css', File.join(@output, 'fontcustom.css'))
+    end
+
+    def create_less
+      files = Dir[File.join(input, '*.{svg,eps}')]
+      @classes = files.map {|file| File.basename(file)[0..-5].gsub(/\W/, '-').downcase }
+      @path = File.basename(@path)
+
+      template('templates/fontcustom.less', File.join(@output, 'fontcustom.less'))
     end
 
     def create_javascript # hatchd addition for js IE8 fallback

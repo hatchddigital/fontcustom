@@ -1,0 +1,49 @@
+//======
+	//Font Custom - icon webfonts made simple
+	//Custom LESS file made for Hatchd Eggbox
+//======
+
+	//===
+		//Set font-face
+	//===
+		@font-face {
+		  font-family: "<%= @name %>";
+		  src: url("<%= @path %>.eot?#iefix") format("embedded-opentype"),
+		       url("<%= @path %>.woff") format("woff"),
+		       url("<%= @path %>.ttf") format("truetype"),
+		       url("<%= @path %>.svg#<%= @name %>") format("svg");
+		  font-weight: normal;
+		  font-style: normal;
+		}
+
+	//===
+		//Map font-family to base icon class
+	//===
+		[class*="icon-"]:before{
+		  font-family:"<%= @name %>";
+		  display:inline-block;
+		  text-decoration:inherit;
+		}
+
+	//===
+		//Set individual icon classes
+	//===
+		<% @classes.each_with_index do |name, index| %>
+		.icon-<%= name %>:before{content:"\<%= (61696+index).to_s(16) %>";}<% end %>
+
+	//===
+		//Set mixins to call set icons through css
+	//===
+
+		#icon{
+			<% @classes.each_with_index do |name, index| %>
+			.<%= name %>(){
+
+				&:before{
+					font-family:"<%= @name %>";
+					display:inline-block;
+					text-decoration:inherit;
+					content:"\<%= (61696+index).to_s(16) %>";
+				}
+        	}<% end %>
+		}
