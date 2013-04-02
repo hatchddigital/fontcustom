@@ -1,15 +1,29 @@
 import fontforge
 import os
-import argparse
 import md5
 import json
 import subprocess
 
-parser = argparse.ArgumentParser(description='Convert a directory of svg and eps files into a unified font file.')
-parser.add_argument('dir', metavar='directory', type=unicode, nargs=2, help='directory of vector files')
-parser.add_argument('--name', metavar='fontname', type=unicode, nargs='?', default='fontcustom', help='reference name of the font (no spaces)')
-parser.add_argument('--nohash', '-n', action='store_true', help='disable hash fingerprinting of font files')
-args = parser.parse_args()
+try:
+	import argparse
+	parser = argparse.ArgumentParser(description='Convert a directory of svg and eps files into a unified font file.')
+	parser.add_argument('dir', metavar='directory', type=unicode, nargs=2, help='directory of vector files')
+	parser.add_argument('--name', metavar='fontname', type=unicode, nargs='?', default='fontcustom', help='reference name of the font (no spaces)')
+	parser.add_argument('--nohash', '-n', action='store_true', help='disable hash fingerprinting of font files')
+	parser.add_argument('--debug', '-d', action='store_true', help='display debug messages')
+	args = parser.parse_args()
+	indir = args.dir[0]
+	outdir = args.dir[1]
+except ImportError:
+	# Older Pythons don't have argparse, so we use optparse instead
+	import optparse
+	parser = optparse.OptionParser(description='Convert a directory of svg and eps files into a unified font file.')
+	parser.add_option('--name', metavar='fontname', type='string', nargs='?', default='fontcustom', help='reference name of the font (no spaces)')
+	parser.add_option('--nohash', '-n', action='store_true', help='disable hash fingerprinting of font files')
+	parser.add_argument('--debug', '-d', action='store_true', help='display debug messages')
+	(args, posargs) = parser.parse_args()
+	indir = posargs[0]
+	outdir = posargs[1]
 
 f = fontforge.font()
 f.encoding = 'UnicodeFull'
@@ -20,13 +34,30 @@ files = []
 
 KERNING = 15
 
-for dirname, dirnames, filenames in os.walk(args.dir[0]):
+for dirname, dirnames, filenames in os.walk(indir):
 	for filename in filenames:
 		name, ext = os.path.splitext(filename)
 		filePath = os.path.join(dirname, filename)
 		size = os.path.getsize(filePath)
 
 		if ext in ['.svg', '.eps']:
+			if ext in ['.svg']:
+				# hack removal of <switch> </switch> tags
+				svgfile = open(filePath, 'r+')
+				svgtext = svgfile.read()
+				svgfile.seek(0)
+
+				# replace the <switch> </switch> tags with 'nothing'
+				svgtext = svgtext.replace('<switch>', '')
+				svgtext = svgtext.replace('</switch>', '')
+			
+				# remove all contents of file so that we can write out the new contents
+				svgfile.truncate()			
+				svgfile.write(svgtext)
+
+				svgfile.close()
+				# end hack
+				
 			m.update(filename + str(size) + ';')
 			glyph = f.createChar(cp)
 			glyph.importOutlines(filePath)
@@ -42,10 +73,10 @@ for dirname, dirnames, filenames in os.walk(args.dir[0]):
 			cp += 1
 
 if args.nohash:
-	fontfile = args.dir[1] + '/' + args.name
+	fontfile = outdir + '/' + args.name
 else:
 	hashStr = m.hexdigest()
-	fontfile = args.dir[1] + '/' + args.name + '-' + hashStr
+	fontfile = outdir + '/' + args.name + '-' + hashStr
 
 f.fontname = args.name
 f.familyname = args.name
@@ -70,7 +101,9 @@ except OSError:
 	# sfnt2woff from source, simplifying install.
 	subprocess.call(['sfnt2woff', fontfile + '.ttf'])
 
-subprocess.call('mkeot ' + fontfile + '.ttf > ' + fontfile + '.eot', shell=True)
+# eotlitetool.py script to generate IE7-compatible .eot fonts
+subprocess.call('python ' + scriptPath + '/eotlitetool.py ' + fontfile + '.ttf -o ' + fontfile + '.eot', shell=True)
+subprocess.call('mv ' + fontfile + '.eotlite ' + fontfile + '.eot', shell=True)
 
 # Hint the TTF file
 subprocess.call('ttfautohint -s -n ' + fontfile + '.ttf ' + fontfile + '-hinted.ttf > /dev/null 2>&1 && mv ' + fontfile + '-hinted.ttf ' + fontfile + '.ttf', shell=True)

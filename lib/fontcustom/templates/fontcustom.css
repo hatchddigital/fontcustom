@@ -16,12 +16,12 @@
   Bootstrap Overrides
 */
 
-[class^="icon-"]:before, [class*=" icon-"]:before {
+[class*="icon-"]:before {
     display: inline-block;
     font-family: "<%= @name %>";
     font-weight: normal;
     font-style: normal;
-    text-decoration: inherit;
+    text-decoration: none;
 }
 
 /*
