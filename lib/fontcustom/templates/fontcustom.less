@@ -20,7 +20,8 @@
 	//===
 		//Map font-family to base icon class
 	//===
-		[class*="icon-"]:before{
+		[class*="icon-"]:before,
+        .icon-legacy{
             display: inline-block;
             font-family: "<%= @name %>";
             font-weight: normal;
